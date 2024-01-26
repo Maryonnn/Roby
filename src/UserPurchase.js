@@ -10,7 +10,7 @@ function UserPurchase(){
     const fetchPurchaseHistory = useCallback(async () => {
         try {
           const { data, error } = await supabase
-            .from('user_purchase')
+            .from('User_Purchase')
             .select('*')
             .eq('user_name', user_name);
 

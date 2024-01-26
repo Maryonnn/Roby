@@ -14,7 +14,7 @@ function UserProducts(){
     const all = async () => {
         try {
           const { data } = await supabase
-            .from('dealer_inventory')
+            .from('Dealer_Inventory')
             .select('*')
     
         console.log(data);
@@ -34,7 +34,7 @@ function UserProducts(){
                 all();
             } else {
                 const { data } = await supabase
-                    .from('dealer_inventory')
+                    .from('Dealer_Inventory')
                     .select('*')
                     .eq('dealer_name', dealer_name)
                 setCarData(data);
@@ -58,8 +58,9 @@ function UserProducts(){
     return(
         <>
             <UserNavbar />
+            <div style={{backgroundColor:'#CCB3A3'}}>
             {error && <p>{error}</p>}
-            <Container style={{ display: 'flex' }}>
+            <Container style={{ display: 'flex',  }}>
                 <Form className="d-flex justify-content-end mt-5 me-2" style={{ width: '70%' }}>
                     <Form.Control
                         type="search"
@@ -88,7 +89,9 @@ function UserProducts(){
                         <CarCard key={car.vin} car={car} onClickBuyNow={onClickBuyNow} />
                     ))}
                 </Container>
+                
             )}
+            </div>
         </>
     );
 
@@ -115,7 +118,7 @@ function UserProducts(){
                                     <Card.Title className="mt-2">{car_name}</Card.Title>
                                     <Card.Text>Price: {price}<br/>Stocks: {stocks}</Card.Text>
                                     <Button 
-                                        variant="dark" 
+                                     style={{backgroundColor:'#A67B5B', borderColor:'white'}}
                                         className="check-out" 
                                         onClick={handleBuyNowClick}
                                     >

@@ -14,7 +14,7 @@ function DealerNavbar() {
   };
 
   return (
-    <Navbar expand="lg" bg="dark" data-bs-theme="dark" sticky="top">
+    <Navbar expand="lg" style={{backgroundColor:'#4B3832'}} data-bs-theme="dark" sticky="top">
       <Container>
         <Image src='logo.png' style={{width: '60px', height: '60px'}}/> 
         <Navbar.Brand href="/dealerhome">AutoHub</Navbar.Brand>

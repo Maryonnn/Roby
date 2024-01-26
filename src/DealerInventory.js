@@ -13,7 +13,7 @@ function DealerInventory(){
     const handleInventory = useCallback(async () => {
         try{
             const { data } = await supabase
-            .from('dealer_inventory')
+            .from('Dealer_Inventory')
             .select('*') 
             .eq('dealer_name', dealerName);
             setCarData(data);

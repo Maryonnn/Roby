@@ -15,7 +15,7 @@ function CompanyVehicles(){
     const handleLogin = useCallback(async () => {
         try {
             const { data } = await supabase
-            .from('cars')
+            .from('Vehicles')
             .select('*') 
             .eq('dealer_name', dealerName);
             setCarData(data);
@@ -42,8 +42,10 @@ function CompanyVehicles(){
     };
     
     return (
-        <>
+        <>  
+        <div style={{backgroundColor:'#CCB3A3'}}>
             <DealerNavbar />
+        
             <Container>
                 <Form className="d-flex justify-content-end mt-5 me-5">
                     <Form.Control
@@ -63,6 +65,7 @@ function CompanyVehicles(){
                     ))}
                 </Container>
             )}
+            </div>
         </>
     );
 };
@@ -89,7 +92,7 @@ function CarCard({ car, onClickBuyNow }) {
                         <Card.Title className="mt-2">{car_name}</Card.Title>
                         <Card.Text>Price: {price}<br/>Stocks: {stocks}</Card.Text>
                         <Button 
-                            variant="dark" 
+                       style={{backgroundColor:'#A67B5B', borderColor:'white'}}
                             className="check-out" 
                             onClick={handleBuyNowClick}
                         >
@@ -99,11 +102,6 @@ function CarCard({ car, onClickBuyNow }) {
                 </Row>
             </Card>
         </Container>
-        <div className="footer1 d-flex">
-            <div style={{fontSize: "10px"}} className='mt-2'>
-                © 2024 Copyright: ITE 19 - Appraisal
-            </div>
-        </div>
         </>
       );
 }

@@ -9,7 +9,7 @@ const DealerConfirm = () =>  {
 
     const deduct = useCallback(async (car_name) => {
         const { data } = await supabase
-        .from('cars')
+        .from('Vehicles')
         .select('*')
         .eq('car_name', car_name)
         .single();
@@ -22,7 +22,7 @@ const DealerConfirm = () =>  {
           const deductedstocks = localStorage.getItem('newstocks')
           let newStocks = parseInt(deductedstocks) - 1;
             const { data } = await supabase
-            .from('cars')
+            .from('Vehicles')
             .update({ 'stocks': newStocks })    
             .eq('car_name', car_name);
             console.log(data);
@@ -39,7 +39,7 @@ const DealerConfirm = () =>  {
         let newStocks = parseInt(stocks) + 1;
         try {
             const { data } = await supabase
-            .from('dealer_inventory')
+            .from('Dealer_Inventory')
             .update({ 'stocks': newStocks })    
             .eq('car_name', car_name);
             console.log(data);
@@ -60,7 +60,7 @@ const DealerConfirm = () =>  {
 
         try {
             const { data } = await supabase
-            .from('dealer_inventory')
+            .from('Dealer_Inventory')
             .insert([
                 {
                     dealer_name,
@@ -75,8 +75,6 @@ const DealerConfirm = () =>  {
             .select()
             console.log(data);
             deduct(car_name);
-            alert("Ordered Successfully")
-            navigate('/dealerinventory');
         } 
         catch (error) {
             console.error('Error during login:', error.message);
@@ -87,7 +85,7 @@ const DealerConfirm = () =>  {
         const car_name = localStorage.getItem('car_name');
         try {
             const { data } = await supabase
-            .from('dealer_inventory')
+            .from('Dealer_Inventory')
             .select('*')
             .eq('car_name', car_name)
             .single();

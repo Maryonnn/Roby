@@ -16,7 +16,7 @@ function Login(){
     const validateCustomer = async () => {
         try {
             const { data } = await supabase
-                .from('user')
+                .from('Users_Acc')
                 .select('*')
                 .eq('email', email)
                 .single();
@@ -27,7 +27,7 @@ function Login(){
                 const user = data.user_name;
                 localStorage.setItem('user_name', user);
                 console.log(user);
-                navigate("/userhome");
+                navigate("/userproducts");
             }
         } 
         catch (error) {
@@ -38,7 +38,7 @@ function Login(){
     const validateDealer = async () => {
         try {
             const { data } = await supabase
-                .from('dealer')
+                .from('Dealer_Acc')
                 .select('*')
                 .eq('email', email)
                 .single();
@@ -65,6 +65,7 @@ function Login(){
     }
 
     return (
+        <div style={{backgroundColor:'#CCB3A3', height:'97vh'}}>
         <Container className="p-5 my-3">
             <Card style={{ padding: '50px 50px', boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px'}}>
                 <Row>
@@ -100,7 +101,7 @@ function Login(){
                                     </FloatingLabel>
                                 </Col>
                                 <Col>
-                                    <Button onClick={handleClick} variant="dark" style={{width: '341px ', height: '57px'}}>
+                                    <Button onClick={handleClick} variant="dark" style={{width: '341px ', height: '57px', backgroundColor:'#A67B5B', borderColor:'white'}}>
                                     {loading ? (
                                         <>
                                             <Spinner
@@ -124,6 +125,7 @@ function Login(){
                 </Row>
             </Card>
         </Container>
+        </div>
     );
 };
 

@@ -7,7 +7,7 @@ import Image from 'react-bootstrap/Image';
 
 function UserNavbar() {
   return (
-    <Navbar expand="lg" bg="dark" data-bs-theme="dark" sticky="top">
+    <Navbar expand="lg" data-bs-theme="dark" sticky="top" style={{backgroundColor:'#4B3832'}}>
       <Container>
         <Image src='logo.png' style={{width: '60px', height: '60px'}}/> 
         <Navbar.Brand href="/userhome">AutoHub</Navbar.Brand>
