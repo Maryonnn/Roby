@@ -43,29 +43,21 @@ function CompanyVehicles(){
     
     return (
         <>  
-        <div style={{backgroundColor:'#CCB3A3'}}>
-            <DealerNavbar />
-        
-            <Container>
-                <Form className="d-flex justify-content-end mt-5 me-5">
-                    <Form.Control
-                        type="search"
-                        placeholder="Search here. . ."
-                        className="me-2 w-25"
-                        aria-label="Search"
-                        onChange={event => setSearchTerm(event.target.value)}
-                    />
-                </Form>
+     <div style={{ display: 'flex', height: 'auto', overflow: 'scroll initial', backgroundColor:'#CCB3A3' }}>
+    <DealerNavbar />
+
+    {/* Main Content */}
+    <div style={{ flex: 1, padding: '20px' }}>
+        {error && <p>{error}</p>}
+        {carData && (
+            <Container className='flexcon mt-4'>
+                {carData.filter(car => car.car_name.toLowerCase().includes(searchTerm.toLowerCase())).map((car) => (
+                    <CarCard key={car.vin} car={car} onClickBuyNow={onClickBuyNow} />
+                ))}
             </Container>
-            {error && <p>{error}</p>}
-            {carData && (
-                <Container className='flexcon mt-4'>
-                    {carData.filter(car => car.car_name.toLowerCase().includes(searchTerm.toLowerCase())).map((car) => (
-                        <CarCard key={car.vin} car={car} onClickBuyNow={onClickBuyNow} />
-                    ))}
-                </Container>
-            )}
-            </div>
+        )}
+    </div>
+</div>
         </>
     );
 };
