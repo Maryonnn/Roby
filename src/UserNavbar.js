@@ -1,39 +1,52 @@
-import Container from 'react-bootstrap/Container';
+import React from 'react';
 import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import Offcanvas from 'react-bootstrap/Offcanvas';
-import Image from 'react-bootstrap/Image';
+import Button from 'react-bootstrap/Button';
+import { useNavigate } from 'react-router-dom';
+import {
+  CDBSidebar,
+  CDBSidebarContent,
+  CDBSidebarFooter,
+  CDBSidebarHeader,
+  CDBSidebarMenu,
+  CDBSidebarMenuItem,
+} from 'cdbreact';
+import "./app.css";
 
-function UserNavbar() {
+function DealerNavbar() {
+  const navigate = useNavigate();
+  const logout = async () => {
+    localStorage.clear();
+    navigate("/");
+  };
+
   return (
-    <Navbar expand="lg" data-bs-theme="dark" sticky="top" style={{backgroundColor:'#4B3832'}}>
-      <Container>
-        <Image src='logo.png' style={{width: '60px', height: '60px'}}/> 
-        <Navbar.Brand href="/userhome">AutoHub</Navbar.Brand>
-            <Navbar.Offcanvas bplacement="end">
-                <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>
-                    Offcanvas
-                    </Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                    <Nav className="justify-content-end flex-grow-1 pe-3">
-                        <Nav.Link href="/userproducts">Vehicles</Nav.Link>
-                        <Nav.Link href="/userpurchase">Purchases</Nav.Link>
-                        <NavDropdown title="MyAccount">
-                            <NavDropdown.Item href="#action3">Profile</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="/">
-                                Logout
-                            </NavDropdown.Item>
-                        </NavDropdown>
-                    </Nav>
-                </Offcanvas.Body>
-            </Navbar.Offcanvas>
-        </Container>
-    </Navbar>
+    <div className="sidebar-container">
+      <CDBSidebar textColor="#fff" backgroundColor="#333" className="sidebar">
+        <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>} className="sidebar-header">
+          <a href="/userproducts" className="text-decoration-none" style={{ color: 'inherit' }}>
+            Roby Regal Rides
+          </a>
+        </CDBSidebarHeader>
+
+        <CDBSidebarContent className="sidebar-content">
+          <CDBSidebarMenu>
+            <Nav.Link href="/userproducts">
+              <CDBSidebarMenuItem icon="columns" className="sidebar-menu-item">Car Models</CDBSidebarMenuItem>
+            </Nav.Link>
+            <Nav.Link href="/userpurchase">
+              <CDBSidebarMenuItem icon="shopping-bag" className="sidebar-menu-item">Purchases</CDBSidebarMenuItem>
+            </Nav.Link>
+          </CDBSidebarMenu>
+        </CDBSidebarContent>
+
+        <CDBSidebarFooter style={{ textAlign: 'center' }} className="sidebar-footer">
+          <Button variant="outline-light" onClick={logout}>
+            Logout
+          </Button>
+        </CDBSidebarFooter>
+      </CDBSidebar>
+    </div>
   );
 }
 
-export default UserNavbar;
+export default DealerNavbar;

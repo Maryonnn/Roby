@@ -5,22 +5,24 @@ import { useNavigate } from 'react-router-dom';
 import supabase from './SupabaseClient.js';
 import './app.css';
 
-function UserProducts(){
+function UserProducts() {
     const [carData, setCarData] = useState(null);
     const [error] = useState(null);
+    const [minPrice, setMinPrice] = useState("");
+    const [maxPrice, setMaxPrice] = useState("");
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
 
     const all = async () => {
         try {
-          const { data } = await supabase
-            .from('Dealer_Inventory')
-            .select('*')
-    
-        console.log(data);
-        setCarData(data);
+            const { data } = await supabase
+                .from('Dealer_Inventory')
+                .select('*')
+
+            console.log(data);
+            setCarData(data);
         } catch (error) {
-          console.error('Error during login:', error.message);
+            console.error('Error during login:', error.message);
         }
     };
 
@@ -40,8 +42,34 @@ function UserProducts(){
                 setCarData(data);
             }
         } catch (error) {
-          console.error('Error during login:', error.message);
+            console.error('Error during login:', error.message);
         }
+    };
+
+    const filterByPriceRange = async () => {
+        try {
+            console.log('Filtering by price range:', minPrice, maxPrice);
+    
+            const parsedMinPrice = parsePrice(minPrice);
+            const parsedMaxPrice = parsePrice(maxPrice);
+    
+            console.log('Parsed price range:', parsedMinPrice, parsedMaxPrice);
+    
+            const { data } = await supabase
+                .from('Dealer_Inventory')
+                .select('*')
+                .gte('price', parsedMinPrice)
+                .lte('price', parsedMaxPrice);
+    
+            console.log('Filtered data:', data);
+            setCarData(data);
+        } catch (error) {
+            console.error('Error during filtering by price range:', error.message);
+        }
+    };
+
+    const parsePrice = (priceString) => {
+        return parseFloat(priceString.replace(/\$|,/g, ""));
     };
 
     const onClickBuyNow = (car) => {
@@ -55,42 +83,64 @@ function UserProducts(){
         navigate('/userconfirm');
     };
 
-    return(
+    return (
         <>
-            <UserNavbar />
-            <div style={{backgroundColor:'#CCB3A3'}}>
-            {error && <p>{error}</p>}
-            <Container style={{ display: 'flex',  }}>
-                <Form className="d-flex justify-content-end mt-5 me-2" style={{ width: '70%' }}>
-                    <Form.Control
-                        type="search"
-                        placeholder="Search here. . ."
-                        className="me-2 w-25"
-                        aria-label="Search"
-                        onChange={event => setSearchTerm(event.target.value)}
-                    />
-                </Form>
-                <div className="d-flex justify-content-start mt-5" style={{ width: '30%' }}>
-                    <FloatingLabel controlId="floatingSelect" label="Select Brand" className="me-3">
-                        <Form.Select aria-label="Floating label select example" onChange={e => handleLogin(e.target.value)}>
-                            <option onClick={all}>All</option>
-                            <option value='Jeep'>Jeep</option>
-                            <option value='Maserati'>Maserati</option>
-                            <option value='Mitsubishi'>Mitsubishi</option>
-                            <option value='Bentley'>Bentley</option>
-                            <option value='Cadillac'>Cadillac</option>
-                        </Form.Select>
-                    </FloatingLabel>
+            <div style={{ display: 'flex', height: 'auto', overflow: 'scroll initial', backgroundColor: '#CCB3A3' }}>
+                <UserNavbar />
+                <div style={{ flex: 1, padding: '20px' }}>
+                    <Container className="d-flex justify-content-end">
+                        <FloatingLabel 
+                            controlId="floatingSelect" 
+                            label="Select Brand" 
+                            className="mt-3 me-3"
+                        >
+                            <Form.Select aria-label="Floating label select example" onChange={e => handleLogin(e.target.value)}>
+                                <option onClick={all}>All</option>
+                                <option value='GMC'>GMC</option>
+                                <option value='Cadillac'>Cadillac</option>
+                                <option value='Buick'>Buick</option>
+                                <option value='Chevrolet'>Chevrolet</option>
+                            </Form.Select>
+                        </FloatingLabel>
+                        <Form className="mt-3" style={{ width: '70%', }}>
+                            <Form.Control
+                                type="search"
+                                placeholder="Search here. . ."
+                                className="me-2 w-25"
+                                aria-label="Search"
+                                onChange={event => setSearchTerm(event.target.value)}
+                            />
+                        </Form>
+                        <Form className="mt-3" style={{ width: '70%' }}>
+                            <Form.Control
+                                type="text"
+                                placeholder="Min Price"
+                                value={minPrice}
+                                onChange={(e) => setMinPrice(e.target.value)}
+                            />
+                        </Form>
+                        <Form className="mt-3" style={{ width: '70%' }}>
+                            <Form.Control
+                                type="text"
+                                placeholder="Max Price"
+                                value={maxPrice}
+                                onChange={(e) => setMaxPrice(e.target.value)}
+                            />
+                        </Form>
+                        <Button onClick={filterByPriceRange} className="ms-2">
+                            Apply Price Range
+                        </Button>
+                    </Container>
+                    {error && <p>{error}</p>}
+                    {carData && (
+                        <Container className='flexcon mt-4'>
+                            {carData.filter(car => car.car_name.toLowerCase().includes(searchTerm.toLowerCase())).map((car) => (
+                                <CarCard key={car.vin} car={car} onClickBuyNow={onClickBuyNow} />
+                            ))}
+                        </Container>
+                        
+                    )}
                 </div>
-            </Container>
-            {carData && (
-                <Container className='flexcon mt-4'>
-                    {carData.filter(car => car.car_name.toLowerCase().includes(searchTerm.toLowerCase())).map((car) => (
-                        <CarCard key={car.vin} car={car} onClickBuyNow={onClickBuyNow} />
-                    ))}
-                </Container>
-                
-            )}
             </div>
         </>
     );
@@ -101,37 +151,36 @@ function UserProducts(){
         const handleBuyNowClick = () => {
             onClickBuyNow(car);
         };
-      
         return (
             <>
                 <Container>
-                    <div className="mb-4">
-                        <Card style={{ maxWidth: '540px', 
-                            boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
-                            padding: '20px 20px'
-                        }}>
-                            <Row>
-                                <Col sm={7}>
-                                    <Card.Img src={image_path} className="card-image" />
-                                </Col>
-                                <Col sm={5}>
-                                    <Card.Title className="mt-2">{car_name}</Card.Title>
-                                    <Card.Text>Price: {price}<br/>Stocks: {stocks}</Card.Text>
+                    <Card className="card-box">
+                        <Row>
+                            <Col sm={7}>
+                                <Card.Img src={image_path} className="card-image" />
+                            </Col>
+                            <Col sm={5}>
+                                <Card.Title className="mt-2">{car_name}</Card.Title>
+                                <Card.Text>Price: {price}<br/>Stocks: {stocks}</Card.Text>
+                                
+                                {stocks > 0 ? (
                                     <Button 
-                                     style={{backgroundColor:'#A67B5B', borderColor:'white'}}
+                                        style={{backgroundColor:'#A67B5B', borderColor:'white'}}
                                         className="check-out" 
                                         onClick={handleBuyNowClick}
                                     >
                                         Check Out
                                     </Button>
-                                </Col>
-                            </Row>
-                        </Card>
-                    </div>
+                                ) : (
+                                    <div>Sold Out</div>
+                                )}
+                            </Col>
+                        </Row>
+                    </Card>
                 </Container>
-
             </>
         );
     }
 }
+
 export default UserProducts;

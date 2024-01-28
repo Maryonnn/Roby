@@ -29,9 +29,11 @@ function UserPurchase(){
 
     return(
         <>
+           <div style={{ display: 'flex', height: 'auto', overflow: 'scroll initial', backgroundColor: '#CCB3A3' }}>
             <UserNavbar />
+            <div style={{ flex: 1, padding: '20px' }}>
             <Container className='mt-5'>
-                <Table responsive="sm">
+                <Table responsive="sm" striped bordered hover>
                     <thead>
                     <tr>
                         <th>CAR</th>
@@ -60,6 +62,8 @@ function UserPurchase(){
                     </tbody>
                 </Table>
             </Container>
+            </div>
+            </div>
         </>
     );
 }

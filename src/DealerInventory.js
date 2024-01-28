@@ -29,32 +29,38 @@ function DealerInventory(){
 
     return (
         <>
-        <div style={{ display: 'flex', height: 'auto', overflow: 'scroll initial', backgroundColor: '#CCB3A3' }}>
-    <DealerNavbar />
-    
-    {/* Main Content */}
-    <div style={{ flex: 1, padding: '20px' }}>
-        <Container>
-            <Form className="d-flex justify-content-end mt-5 me-5">
-                <Form.Control
-                    type="search"
-                    placeholder="Search here. . ."
-                    className="me-2 w-25"
-                    aria-label="Search"
-                    onChange={(event) => setSearchTerm(event.target.value)}
-                />
-            </Form>
-        </Container>
-        {error && <p>{error}</p>}
-        {carData && (
-            <Container className='flexcon mt-4'>
-                {carData.filter(car => car.car_name.toLowerCase().includes(searchTerm.toLowerCase())).map((car) => (
-                    <CarCard key={car.vin} car={car} />
-                ))}
-            </Container>
-        )}
-    </div>
-</div>
+            <div style={{ 
+                display: 'flex', 
+                height: 'auto', 
+                overflow: 'scroll initial', 
+                backgroundColor: '#CCB3A3' 
+            }}>
+                <DealerNavbar />
+                <div style={{ 
+                    flex: 1, 
+                    padding: '20px' 
+                }}>
+                    <Container>
+                        <Form className="d-flex justify-content-end mt-3 me-5">
+                            <Form.Control
+                                type="search"
+                                placeholder="Search here. . ."
+                                className="me-2 w-25"
+                                aria-label="Search"
+                                onChange={(event) => setSearchTerm(event.target.value)}
+                            />
+                        </Form>
+                    </Container>
+                    {error && <p>{error}</p>}
+                    {carData && (
+                        <Container className='flexcon mt-4 mb-2'>
+                            {carData.filter(car => car.car_name.toLowerCase().includes(searchTerm.toLowerCase())).map((car) => (
+                                <CarCard key={car.vin} car={car} />
+                            ))}
+                        </Container>
+                    )}
+                </div>
+            </div>
         </>
     );
 };
@@ -65,11 +71,7 @@ function CarCard({ car }) {
     return (
         <>
             <Container>
-                <Card style={{ 
-                    maxWidth: '540px', 
-                    boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px',
-                    padding: '20px 10px'
-                }}>
+                <Card className="card-box">
                     <Row>
                         <Col sm={7}>
                             <Card.Img src={image_path} className="card-image" />
