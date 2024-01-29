@@ -12,6 +12,15 @@ function UserPurchase() {
 
     const [displayTopSales, setDisplayTopSales] = useState(false);
 
+    const formatDate = (dateTimeString) => {
+        const options = {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        return new Date(dateTimeString).toLocaleString(undefined, options);
+    };
+
     const fetchPurchaseHistory = useCallback(async () => {
         try {
             setLoading(true);
@@ -59,7 +68,7 @@ function UserPurchase() {
                 <DealerNavbar />
 
                 {/* Main Content */}
-                <div style={{ flex: 1, padding: '20px' }}>
+                <div style={{ flex: 1, padding: '20px', height: '100vh' }}>
                     <Container className='mt-4'>
                         <Button
                             onClick={handleSortByTopSales}
@@ -82,7 +91,7 @@ function UserPurchase() {
                                     <th>ENGINE</th>
                                     <th>PRICE</th>
                                     <th>TRANSMISSION</th>
-                                    <th>VIN</th>
+                                    <th>DATE PURCHASED</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -109,7 +118,7 @@ function UserPurchase() {
                                         <td>{purchase.car_engine}</td>
                                         <td>{purchase.car_price}</td>
                                         <td>{purchase.transmission_type}</td>
-                                        <td>{purchase.VIN}</td>
+                                        <td>{formatDate(purchase.created_at)}</td>
                                     </tr>
                                 ))}
                                 {!loading && !error && displayTopSales && sortedPurchaseHistory.map((purchase) => (
@@ -121,7 +130,7 @@ function UserPurchase() {
                                         <td>{purchase.car_engine}</td>
                                         <td>{purchase.car_price}</td>
                                         <td>{purchase.transmission_type}</td>
-                                        <td>{purchase.VIN}</td>
+                                        <td>{formatDate(purchase.created_at)}</td>
                                     </tr>
                                 ))}
                             </tbody>

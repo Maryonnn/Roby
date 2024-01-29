@@ -10,14 +10,14 @@ function CompanyVehicles(){
     const [error] = useState(null);
     const dealerName = localStorage.getItem('dealer_name');
     const [searchTerm, setSearchTerm] = useState("");
-    const navigate = useNavigate();;
+    const navigate = useNavigate();
 
     const handleLogin = useCallback(async () => {
         try {
             const { data } = await supabase
-            .from('Vehicles')
-            .select('*') 
-            .eq('dealer_name', dealerName);
+                .from('Vehicles')
+                .select('*') 
+                .eq('dealer_name', dealerName);
             setCarData(data);
         } 
         catch (error) {
@@ -45,7 +45,7 @@ function CompanyVehicles(){
         <>  
             <div style={{ display: 'flex', height: 'auto', overflow: 'scroll initial', backgroundColor: '#CCB3A3' }}>
                 <DealerNavbar />
-                <div style={{ flex: 1, padding: '20px' }}>
+                <div style={{ flex: 1, padding: '5px' }}>
                     <Container>
                         <Form className="d-flex justify-content-end mt-3 me-5">
                             <Form.Control
@@ -61,7 +61,7 @@ function CompanyVehicles(){
                     {carData && (
                         <Container className='flexcon mt-4 mb-2'>
                             {carData.filter(car => car.car_name.toLowerCase().includes(searchTerm.toLowerCase())).map((car) => (
-                                <CarCard key={car.vin} car={car} />
+                                <CarCard key={car.vin} car={car} onClickBuyNow={onClickBuyNow} />
                             ))}
                         </Container>
                     )}
@@ -80,17 +80,17 @@ function CarCard({ car, onClickBuyNow }) {
     return (
         <>
             <Container>
-                <Card className="card-box">
+                <Card className="card-box mb-3">
                     <Row>
                         <Col sm={7}>
                             <Card.Img src={image_path} className="card-image" />
                         </Col>
                         <Col sm={5}>
-                            <Card.Title className="mt-2">{car_name}</Card.Title>
-                            <Card.Text>Price: {price}<br/>Stocks: {stocks}</Card.Text>
+                            <Card.Title className="mt-2" style={{fontSize:'2rem'}}>{car_name}</Card.Title>
+                            <Card.Text>Price:₱{price}<br/>Stocks: {stocks}</Card.Text>
                             <Button 
-                        style={{backgroundColor:'#A67B5B', borderColor:'white'}}
-                                className="check-out" 
+                                style={{backgroundColor:'#A67B5B', borderColor:'white'}}
+                                className="check-out h-25" 
                                 onClick={handleBuyNowClick}
                             >
                                 Buy Now

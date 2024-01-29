@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import UserNavbar from "./UserNavbar.js";
 import { Col, Row, Card, Container, Button, Form, FloatingLabel } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
@@ -46,34 +46,8 @@ function UserProducts() {
         }
     };
 
-    const filterByPriceRange = async () => {
-        try {
-            console.log('Filtering by price range:', minPrice, maxPrice);
-    
-            const parsedMinPrice = parsePrice(minPrice);
-            const parsedMaxPrice = parsePrice(maxPrice);
-    
-            console.log('Parsed price range:', parsedMinPrice, parsedMaxPrice);
-    
-            const { data } = await supabase
-                .from('Dealer_Inventory')
-                .select('*')
-                .gte('price', parsedMinPrice)
-                .lte('price', parsedMaxPrice);
-    
-            console.log('Filtered data:', data);
-            setCarData(data);
-        } catch (error) {
-            console.error('Error during filtering by price range:', error.message);
-        }
-    };
-
-    const parsePrice = (priceString) => {
-        return parseFloat(priceString.replace(/\$|,/g, ""));
-    };
-
     const onClickBuyNow = (car) => {
-        const { dealer_name, car_name, car_style, price, VIN,image_path } = car;
+        const { dealer_name, car_name, car_style, price, VIN, image_path } = car;
         localStorage.setItem('dealer_name', dealer_name);
         localStorage.setItem('car_name', car_name);
         localStorage.setItem('car_style', car_style);
@@ -102,41 +76,42 @@ function UserProducts() {
                                 <option value='Chevrolet'>Chevrolet</option>
                             </Form.Select>
                         </FloatingLabel>
-                        <Form className="mt-3" style={{ width: '70%', }}>
+                        <div className="d-flex justify-content-end">
                             <Form.Control
                                 type="search"
                                 placeholder="Search here. . ."
-                                className="me-2 w-25"
+                                className="me-2 w-100"
                                 aria-label="Search"
                                 onChange={event => setSearchTerm(event.target.value)}
                             />
-                        </Form>
-                        <Form className="mt-3" style={{ width: '70%' }}>
                             <Form.Control
-                                type="text"
+                                type="number"
                                 placeholder="Min Price"
+                                className="me-2 w-100"
                                 value={minPrice}
-                                onChange={(e) => setMinPrice(e.target.value)}
+                                onChange={(event) => setMinPrice(event.target.value)}
                             />
-                        </Form>
-                        <Form className="mt-3" style={{ width: '70%' }}>
                             <Form.Control
-                                type="text"
+                                type="number"
                                 placeholder="Max Price"
+                                className="me-2 w-100"
                                 value={maxPrice}
-                                onChange={(e) => setMaxPrice(e.target.value)}
+                                onChange={(event) => setMaxPrice(event.target.value)}
                             />
-                        </Form>
-                        <Button onClick={filterByPriceRange} className="ms-2">
-                            Apply Price Range
-                        </Button>
+                        </div>
                     </Container>
                     {error && <p>{error}</p>}
                     {carData && (
                         <Container className='flexcon mt-4'>
-                            {carData.filter(car => car.car_name.toLowerCase().includes(searchTerm.toLowerCase())).map((car) => (
-                                <CarCard key={car.vin} car={car} onClickBuyNow={onClickBuyNow} />
-                            ))}
+                            {carData
+                                .filter(car => 
+                                    car.car_name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                                    (!minPrice || parseInt(car.price.replace(/[^\d]/g, '')) >= parseInt(minPrice)) &&
+                                    (!maxPrice || parseInt(car.price.replace(/[^\d]/g, '')) <= parseInt(maxPrice))
+                                )
+                                .map((car) => (
+                                    <CarCard key={car.vin} car={car} onClickBuyNow={onClickBuyNow} />
+                                ))}
                         </Container>
                         
                     )}
@@ -161,7 +136,7 @@ function UserProducts() {
                             </Col>
                             <Col sm={5}>
                                 <Card.Title className="mt-2">{car_name}</Card.Title>
-                                <Card.Text>Price: {price}<br/>Stocks: {stocks}</Card.Text>
+                                <Card.Text>Price:₱{price}<br/>Stocks: {stocks}</Card.Text>
                                 
                                 {stocks > 0 ? (
                                     <Button 

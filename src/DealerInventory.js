@@ -38,7 +38,8 @@ function DealerInventory(){
                 <DealerNavbar />
                 <div style={{ 
                     flex: 1, 
-                    padding: '20px' 
+                    padding: '20px', 
+                    height: '100vh'
                 }}>
                     <Container>
                         <Form className="d-flex justify-content-end mt-3 me-5">

@@ -113,9 +113,6 @@ function Login(){
                                         </Button>
                                     </Col>
                                 </Row>
-                                <p className="mb-5 mt-5">
-                                    Don't have an account? <a style={{cursor: 'pointer', textDecoration: 'none'}} href="/register">Register</a>
-                                </p>
                             </Card.Body>
                         </Col>
                     </Row>

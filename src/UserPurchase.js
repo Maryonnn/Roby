@@ -31,8 +31,8 @@ function UserPurchase(){
         <>
            <div style={{ display: 'flex', height: 'auto', overflow: 'scroll initial', backgroundColor: '#CCB3A3' }}>
             <UserNavbar />
-            <div style={{ flex: 1, padding: '20px' }}>
-            <Container className='mt-5'>
+            <div style={{ flex: 1, padding: '20px', height:'100vh' }}>
+            <Container className='mt-5 '>
                 <Table responsive="sm" striped bordered hover>
                     <thead>
                     <tr>
