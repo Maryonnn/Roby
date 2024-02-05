@@ -43,7 +43,7 @@ function CompanyVehicles(){
     
     return (
         <>  
-            <div style={{ display: 'flex', height: 'auto', overflow: 'scroll initial', backgroundColor: '#CCB3A3' }}>
+            <div style={{ display: 'flex', height: '100vh', overflow: 'scroll initial', backgroundColor: '#CCB3A3' }}>
                 <DealerNavbar />
                 <div style={{ flex: 1, padding: '5px' }}>
                     <Container>

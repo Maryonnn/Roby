@@ -71,9 +71,9 @@ function UserProducts() {
                             <Form.Select aria-label="Floating label select example" onChange={e => handleLogin(e.target.value)}>
                                 <option onClick={all}>All</option>
                                 <option value='GMC'>GMC</option>
-                                <option value='Cadillac'>Cadillac</option>
-                                <option value='Buick'>Buick</option>
-                                <option value='Chevrolet'>Chevrolet</option>
+                                <option value='CADILLAC'>Cadillac</option>
+                                <option value='BUICK'>Buick</option>
+                                <option value='CHEVROLET'>Chevrolet</option>
                             </Form.Select>
                         </FloatingLabel>
                         <div className="d-flex justify-content-end">
