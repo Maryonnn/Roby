@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Table, Container, Button, Spinner, Alert, Card, Row, Col, ListGroup } from 'react-bootstrap';
 import DealerNavbar from "./DealerNavbar.js";
 import supabase from './SupabaseClient.js';
+import Chart from 'chart.js/auto';
 
 function UserPurchase() {
     const [purchaseHistory, setPurchaseHistory] = useState([]);
@@ -15,9 +16,8 @@ function UserPurchase() {
     const [carname, setCarname] = useState();
     const [price, setPrice] = useState();
     const [count, setCount] = useState();
-
-
-    const [displayTopSales, setDisplayTopSales] = useState(false);
+    const chartRef = useRef(null);
+    const chartInstanceRef = useRef(null);
 
     const formatDate = (dateTimeString) => {
         const options = {
@@ -60,10 +60,10 @@ function UserPurchase() {
             if (error) {
                 throw error;
             }
-          console.log(data);
-setImage(data[0].image_path);
-setCarname(data[0].car_name);
-setPrice(data[0].price);
+            console.log(data);
+            setImage(data[0].image_path);
+            setCarname(data[0].car_name);
+            setPrice(data[0].price);
 
         } catch (error) {
             console.error('Error during fetching purchase history:', error.message);
@@ -72,19 +72,6 @@ setPrice(data[0].price);
             setLoading(false);
         }
     }, [dealer_name]);
-
-    const handleSortByTopSales = () => {
-        const carCountMap = {};
-        purchaseHistory.forEach((purchase) => {
-            carCountMap[purchase.car_name] = (carCountMap[purchase.car_name] || 0) + 1;
-        });
-        const sortedCars = Object.keys(carCountMap).sort((a, b) => carCountMap[b] - carCountMap[a]);
-        const sortedHistory = purchaseHistory.sort((a, b) =>
-            sortedCars.indexOf(a.car_name) - sortedCars.indexOf(b.car_name)
-        );
-        setSortedPurchaseHistory(sortedHistory);
-        setDisplayTopSales(true);
-    };
 
     const handleShowTopCars = () => {
         const carCountMap = {};
@@ -96,20 +83,55 @@ setPrice(data[0].price);
             carName,
             count: carCountMap[carName],
         }));
-    
-
         setTopCars(topCarsData);
         console.log(topCarsData[0].carName);
         const carName = topCarsData[0].carName;
         localStorage.setItem('carName', carName);
         setCount(topCarsData[0].count);
-
         TopSales();
     };
 
     useEffect(() => {
         fetchPurchaseHistory();
     }, [fetchPurchaseHistory]);
+
+    useEffect(() => {
+        if (chartInstanceRef.current) {
+            chartInstanceRef.current.destroy();
+        }
+
+        // Count car names
+        const carCounts = purchaseHistory.reduce((acc, purchase) => {
+            acc[purchase.car_name] = (acc[purchase.car_name] || 0) + 1;
+            return acc;
+        }, {});
+
+        const xValues = Object.keys(carCounts);
+        const yValues = Object.values(carCounts);
+
+        const ctx = chartRef.current.getContext('2d');
+        chartInstanceRef.current = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: '#A67B5B',
+                    data: yValues
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Sales'
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }, [purchaseHistory]);
 
     return (
         <>
@@ -122,12 +144,12 @@ setPrice(data[0].price);
                             style={{
                                 backgroundColor: '#A67B5B',
                                 borderColor: '#CCB3A3',
-                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', // Add shadow
+                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                             }}
                         >
                             Show top car sale
                         </Button>
-                        <div className='mt-1'>
+                        <div className='mt-1 d-flex justify-content-center'>
                             <Card style={{ width: '50rem' }}>
                                 <Card.Header>Top Car Sale</Card.Header>
                                 <Row>
@@ -145,71 +167,14 @@ setPrice(data[0].price);
                             </Card>
                         </div>
 
-                        <Button
-                            onClick={handleSortByTopSales}
-                            className="mb-2 mt-3"
-                            style={{
-                                backgroundColor: '#A67B5B',
-                                borderColor: '#CCB3A3',
-                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                            }}
-                        >
-                            Sort by Top Sales
-                        </Button>
-                        <Table responsive="sm" striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <th>CUSTOMER</th>
-                                    <th>CAR</th>
-                                    <th>STYLE</th>
-                                    <th>COLOR</th>
-                                    <th>ENGINE</th>
-                                    <th>PRICE</th>
-                                    <th>TRANSMISSION</th>
-                                    <th>DATE PURCHASED</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading && (
-                                    <tr>
-                                        <td colSpan="8" className="text-center">
-                                            <Spinner animation="border" variant="dark" />
-                                        </td>
-                                    </tr>
-                                )}
-                                {error && (
-                                    <tr>
-                                        <td colSpan="8">
-                                            <Alert variant="danger">{error}</Alert>
-                                        </td>
-                                    </tr>
-                                )}
-                                {!loading && !error && !displayTopSales && purchaseHistory.map((purchase) => (
-                                    <tr key={purchase.VIN}>
-                                        <td>{purchase.user_name}</td>
-                                        <td>{purchase.car_name}</td>
-                                        <td>{purchase.car_style}</td>
-                                        <td>{purchase.car_color}</td>
-                                        <td>{purchase.car_engine}</td>
-                                        <td>{purchase.car_price}</td>
-                                        <td>{purchase.transmission_type}</td>
-                                        <td>{formatDate(purchase.created_at)}</td>
-                                    </tr>
-                                ))}
-                                {!loading && !error && displayTopSales && sortedPurchaseHistory.map((purchase) => (
-                                    <tr key={purchase.VIN}>
-                                        <td>{purchase.user_name}</td>
-                                        <td>{purchase.car_name}</td>
-                                        <td>{purchase.car_style}</td>
-                                        <td>{purchase.car_color}</td>
-                                        <td>{purchase.car_engine}</td>
-                                        <td>{purchase.car_price}</td>
-                                        <td>{purchase.transmission_type}</td>
-                                        <td>{formatDate(purchase.created_at)}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
+                        <div style={{ display: 'flex', height: 'auto', overflow: 'scroll initial'}}>
+                            <div style={{ flex: 1, padding: '20px'}}>
+                                <Container className='mt-4'>
+                                    <canvas ref={chartRef} id="myChart"></canvas>
+                                </Container>
+                            </div>
+                        </div>
+                        
                     </Container>
                 </div>
             </div>
